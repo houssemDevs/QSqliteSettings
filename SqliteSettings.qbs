@@ -10,7 +10,7 @@ Project {
 
         Export {
             Depends { name: "cpp" }
-            cpp.includePaths: importingProduct.qbs.installRoot + "/include"
+            cpp.includePaths: [product.sourceDirectory]
         }
 
         cpp.cxxLanguageVersion: "c++11"
