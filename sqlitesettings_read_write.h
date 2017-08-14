@@ -52,6 +52,7 @@ bool sqliteSettingsRead(QIODevice& device, QSettings::SettingsMap& map) {
     if(!file.open()) {
         return false;
     }
+    qDebug() << "QSqliteSettings " << file.fileName();
     file.write(device.readAll());
     file.close();
     QString filename = file.fileName();

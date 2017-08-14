@@ -1,23 +1,26 @@
 import qbs
 
 Project {
-    minimumQbsVersion: "1.7.1"
+    name: "SqliteSettings"
+
+    qbsSearchPaths: "../qbs_modules"
 
     Product {
-        type: [ "dynamiclibrary" ]
+        type: project.staticBuild ? "staticlibrary" : "dynamiclibrary"
         Depends { name: "Qt"; submodules: [ "core", "sql" ] }
         Depends { name: "cpp" }
-
-        Export {
-            Depends { name: "cpp" }
-            cpp.includePaths: [product.sourceDirectory]
-        }
 
         cpp.cxxLanguageVersion: "c++11"
         cpp.defines: [
             "QT_DEPRECATED_WARNINGS",
             "QT_DISABLE_DEPRECATED_BEFORE=0x060000"
         ]
+
+        Export {
+            Depends { name: "cpp" }
+            cpp.includePaths: [product.sourceDirectory]
+            cpp.defines: product.type == "staticlibrary" ? ["SQLITESETTINGS_STATIC"] : []
+        }
 
         files: [
             "qsqlitesettings.cpp",
@@ -27,7 +30,7 @@ Project {
         ]
 
         Group {
-            name: "install library"
+            condition: product.type == "dynamiclibrary"
             fileTagsFilter: product.type
             qbs.install: true
         }
@@ -40,12 +43,12 @@ Project {
             ]
             overrideTags: false
             qbs.installDir: "include"
-            qbs.install: true
+            qbs.install: project.installInclude
         }
 
         Properties {
             condition: product.type == "dynamiclibrary"
-            cpp.defines: ["SQLITESETTINGS_LIBRARY"]
+            cpp.defines: ["SQLITESETTINGS_SHARED"]
         }
         Properties {
             condition: product.type == "staticlibrary"
